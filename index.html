@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Il Percorso delle Alleanze</title>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --fluo-green: #39FF14; --super-purple: #9D00FF; --hero-red: #FF0000;
@@ -20,6 +20,7 @@
             font-family: 'Luckiest Guy', cursive; color: var(--hero-yellow); 
             text-shadow: 3px 3px 0px var(--hero-red); font-size: 2.2rem; margin: 5px 0; text-align: center;
         }
+        
         .main-container { 
             display: flex; flex-grow: 1; width: 100vw; padding: 0 20px; gap: 15px; 
             align-items: center; height: 80vh;
@@ -34,6 +35,7 @@
         }
         .legend-item { display: flex; align-items: center; margin-bottom: 5px; gap: 8px; line-height: 1.2; }
         .legend-sym { font-size: 1.2rem; width: 25px; text-align: center; }
+        
         #cap-img { 
             width: auto; max-width: 100%; height: 140px; object-fit: contain;
             filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2)); margin-bottom: 5px;
@@ -45,68 +47,88 @@
             width: 100%; flex-grow: 1; min-height: 80px; max-height: 150px;
             display: flex; align-items: center; justify-content: center; margin-top: 5px;
         }
+
         #game-area { 
             flex-grow: 1; position: relative; background: rgba(255, 255, 255, 0.05); 
-            border-radius: 25px; border: 2px solid #333; height: 100%; 
+            border-radius: 25px; border: 2px solid #333; height: 100%; overflow: hidden;
         }
+        #path-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        #main-path-line { fill: none; stroke: #FFFF00; stroke-width: 3; stroke-dasharray: 10,10; stroke-opacity: 0.4; }
+
         .cell {
             position: absolute; width: 62px; height: 62px; display: flex; align-items: center; justify-content: center;
             font-weight: 700; font-size: 0.65rem; color: black; border-radius: 10px;
             box-shadow: 0 4px 0 rgba(0,0,0,0.3); text-align: center; padding: 4px;
-            line-height: 1.1; text-transform: uppercase;
+            line-height: 1.1; text-transform: uppercase; z-index: 2;
         }
         .c-0 { background: var(--fluo-green); } .c-1 { background: var(--super-purple); color: white; }
         .c-2 { background: var(--hero-red); color: white; } .c-3 { background: var(--hero-yellow); }
-        .cell-turbo, .cell-bonus, .cell-amnesia, .cell-stop { font-size: 1.8rem !important; flex-direction: column; }
-        .cell-turbo { background: white !important; border: 3px solid var(--turbo-cyan); color: var(--super-purple) !important; }
-        .cell-bonus { background: var(--bonus-blue) !important; border: 3px solid white; color: white !important; }
-        .cell-amnesia { background: #222 !important; border: 3px solid #000; color: white !important; }
-        .cell-stop { background: var(--stop-orange) !important; border: 3px solid white; color: white !important; font-size: 1.4rem !important; }
         
-        /* Piccola scritta stop */
-        .stop-text { font-size: 0.55rem; font-weight: 900; margin-top: -2px; }
-
-        .cell-cup { 
-            font-size: 2.8rem !important; 
-            background: var(--hero-yellow) !important; 
-            border: 3px solid gold;
-        }
+        .cell-start { font-size: 2.2rem !important; background: white !important; border: 3px solid var(--fluo-green); }
+        .cell-turbo { background: white !important; border: 3px solid var(--turbo-cyan); color: var(--super-purple) !important; font-size: 1.8rem !important; }
+        .cell-bonus { background: var(--bonus-blue) !important; border: 3px solid white; color: white !important; font-size: 1.8rem !important; }
+        .cell-amnesia { background: #222 !important; border: 3px solid #000; color: white !important; font-size: 1.8rem !important; }
+        .cell-stop { background: var(--stop-orange) !important; border: 3px solid white; color: white !important; font-size: 1.4rem !important; flex-direction: column; }
+        .cell-cup { font-size: 2.8rem !important; background: var(--hero-yellow) !important; border: 3px solid gold; }
         
-        #setup-screen, #name-screen, #bonus-screen, #word-modal {
-            position: fixed; inset: 0; background: rgba(5, 5, 15, 0.98);
+        #setup-screen, #name-screen, #bonus-screen, #word-modal, #time-up-screen {
+            position: fixed; inset: 0; background: rgba(5, 5, 15, 0.95);
             z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
+
         .modal-content {
-            background: #1e1e2f; padding: 25px; border: 5px solid var(--hero-yellow);
-            border-radius: 20px; text-align: center; max-width: 600px; width: 90%;
-            max-height: 95vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .modal-word { font-family: 'Luckiest Guy', cursive; font-size: 3rem; color: var(--hero-yellow); margin: 10px 0; text-transform: uppercase; }
-        
-        #final-team-img {
-            width: auto; height: auto; max-width: 100%; max-height: 45vh;
-            border-radius: 12px; border: 3px solid var(--hero-yellow);
-            margin: 0 auto 15px auto; display: none; object-fit: contain;
+            background: #1e1e2f; padding: 15px; border: 6px solid var(--hero-yellow);
+            border-radius: 25px; text-align: center; width: 90%; max-width: 500px;
+            max-height: 90vh; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
 
-        .btn-action {
-            font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; padding: 12px 25px;
-            cursor: pointer; background: var(--super-purple); color: white; border: none; border-radius: 12px;
-            box-shadow: 0 5px 0 #4b0082; margin: 10px auto; transition: 0.2s;
+        .modal-word { 
+            font-family: 'Luckiest Guy', cursive; font-size: 2rem; color: var(--hero-yellow); 
+            margin: 5px 0; text-transform: uppercase;
         }
+
+        #cell-img, #final-team-img { 
+            display: none; width: auto; max-width: 100%; max-height: 180px; 
+            object-fit: contain; margin: 10px auto; border-radius: 12px; border: 3px solid var(--turbo-cyan);
+        }
+
+        #display-desc { font-size: 1.1rem; color:#fff; font-weight: bold; line-height: 1.3; margin: 10px 0; padding: 0 10px; }
+
+        .btn-action { font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; padding: 12px 25px; cursor: pointer; background: var(--super-purple); color: white; border: none; border-radius: 12px; box-shadow: 0 5px 0 #4b0082; margin: 10px; transition: 0.2s; }
         .btn-action:active { transform: translateY(4px); box-shadow: none; }
+        
+        .home-btn { background: var(--hero-red); color: white; border: none; border-radius: 12px; width: 50px; height: 50px; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #800; }
 
-        .player-token {
-            width: 42px; height: 42px; position: absolute; z-index: 100;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 2.4rem;
-            display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 5px black);
-            pointer-events: none;
+        .player-token { width: 42px; height: 42px; position: absolute; z-index: 100; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 2.4rem; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 5px black); }
+        
+        .ui-panel { height: 140px; background: #111; display: flex; align-items: center; justify-content: center; gap: 30px; border-top: 5px solid var(--hero-yellow); width: 100%; padding: 0 20px; }
+        
+        .dice-container { width: 80px; height: 80px; perspective: 600px; cursor: pointer; }
+        #dice-visual {
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: rotateX(-20deg) rotateY(-20deg);
         }
+        .dice-face {
+            position: absolute; width: 80px; height: 80px; background: white;
+            border: 2px solid #ccc; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem; color: black; backface-visibility: hidden;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        }
+        .f-1 { transform: rotateY(0deg) translateZ(40px); }
+        .f-2 { transform: rotateY(90deg) translateZ(40px); }
+        .f-3 { transform: rotateY(180deg) translateZ(40px); }
+        .f-4 { transform: rotateY(-90deg) translateZ(40px); }
+        .f-5 { transform: rotateX(90deg) translateZ(40px); }
+        .f-6 { transform: rotateX(-90deg) translateZ(40px); }
 
-        .ui-panel { height: 120px; background: #111; display: flex; align-items: center; justify-content: space-around; border-top: 5px solid var(--hero-yellow); width: 100%; }
-        #dice-visual { width: 75px; height: 75px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: black; border: 4px solid var(--super-purple); }
-        #turn-info { font-family: 'Luckiest Guy', cursive; font-size: 1.6rem; color: #ccc; }
-        .timer-bar-container { width: 100%; height: 15px; background: #333; border-radius: 10px; margin: 10px 0; overflow: hidden; border: 2px solid #555; }
+        .dice-rolling { animation: spin 0.3s linear infinite; pointer-events: none; }
+        @keyframes spin { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
+
+        #turn-info { font-family: 'Luckiest Guy', cursive; font-size: 1.8rem; color: #ccc; text-align: left; flex-shrink: 0; margin-right: 10px; }
+        .timer-bar-container { width: 100%; height: 12px; background: #333; border-radius: 10px; margin: 5px 0; overflow: hidden; border: 2px solid #555; }
         #timer-bar { width: 100%; height: 100%; background: var(--fluo-green); transition: width 1s linear; }
     </style>
 </head>
@@ -134,13 +156,15 @@
 
     <div id="word-modal" style="display:none;">
         <div class="modal-content">
-            <img id="final-team-img" src="a.png" alt="Team Alleanze">
             <h2 id="display-word" class="modal-word">TITOLO</h2>
-            <p id="display-desc" style="font-size: 1.2rem; color:#fff; font-weight: bold; line-height: 1.4; margin-bottom: 15px;">Suggerimento...</p>
+            <img id="cell-img" src="" alt="Dettaglio Casella">
+            <img id="final-team-img" src="a.png" alt="Team Alleanze">
+            <p id="display-desc"></p>
             <div id="timer-section" style="width: 100%;">
                 <div class="timer-bar-container"><div id="timer-bar"></div></div>
-                <div class="timer-text-wrap" style="display: flex; align-items: center; justify-content: center; gap: 30px;">
-                    <div id="timer-text" style="font-family:'Luckiest Guy', cursive; font-size: 2.5rem; color:var(--fluo-green);">60s</div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+                    <div id="timer-text" style="font-family:'Luckiest Guy', cursive; font-size: 2rem; color:var(--fluo-green);">60s</div>
+                    <button class="home-btn" onclick="closeWordModal()">🏠</button>
                 </div>
             </div>
             <button id="close-modal-btn" class="btn-action" style="display:none;" onclick="closeWordModal()">CONFERMA</button>
@@ -148,14 +172,23 @@
     </div>
 
     <div id="bonus-screen" style="display:none;">
-        <div class="setup-box">
+        <div class="setup-box" style="text-align: center;">
             <h1 style="font-family: 'Luckiest Guy'; color: var(--hero-yellow);">🤝 BONUS TEAM</h1>
+            <p style="color:white; font-weight:bold; font-size: 1.1rem; margin-bottom:15px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">Scegli un alleato rimasto indietro da portare sulla tua casella!</p>
             <div id="bonus-options" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
         </div>
     </div>
 
-    <h1>IL PERCORSO DELLE ALLEANZE</h1>
+    <div id="time-up-screen" style="display:none;">
+        <div class="modal-content">
+            <h1 style="color:var(--hero-yellow); font-size: 2.5rem;">MISSIONE COMPIUTA!</h1>
+            <h2 id="winner-announcement" style="color:white; font-size: 1.6rem; margin: 20px 0;"></h2>
+            <button class="btn-action" onclick="location.reload()">NUOVA PARTITA</button>
+        </div>
+    </div>
 
+    <h1>IL PERCORSO DELLE ALLEANZE</h1>
+    
     <div class="main-container">
         <div id="sidebar">
             <div class="legend">
@@ -165,154 +198,141 @@
                 <div class="legend-item"><span class="legend-sym">🤝</span> <span><b>TEAM:</b> SALVA CHI È INDIETRO</span></div>
             </div>
             <img id="cap-img" src="capitan.png" alt="Capitan America">
-            <div id="cap-msg" class="cap-bubble">"Lancia il dado, soldato!"</div>
+            <div id="cap-msg" class="cap-bubble">"Clicca sul dado, soldato!"</div>
         </div>
-        <div id="game-area"></div>
+        <div id="game-area"><svg id="path-svg"><path id="main-path-line" d="" /></svg></div>
     </div>
 
     <div class="ui-panel">
         <div id="turn-info">In attesa...</div>
-        <div id="dice-visual">?</div>
-        <button id="roll-btn" class="btn-action" onclick="playTurn()">LANCIA IL DADO</button>
+        <div class="dice-container" onclick="playTurn()">
+            <div id="dice-visual">
+                <div class="dice-face f-1">⚀</div>
+                <div class="dice-face f-2">⚁</div>
+                <div class="dice-face f-3">⚂</div>
+                <div class="dice-face f-4">⚃</div>
+                <div class="dice-face f-5">⚄</div>
+                <div class="dice-face f-6">⚅</div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const nomiCaselle = ["Tradimento", "Il ricordo più antico", "Avventura", "Sconfitta", "Like", "Grido di battaglia", "Kryptonite", "Identità segreta", "Qualità", "Buco nero", "Emozione", "Sistema in crash", "Cicatrice di battaglia", "Stanza", "Paura", "Sogno", "Comfort", "Nome", "Maestro di vita", "Superpower", "Sollievo", "Oblio", "Sfida", "Scudo difensivo", "Valore", "Patto degli eroi", "Origine", "Like", "Labirinto", "Silenzio", "No", "Squadra", "Dolore", "Coraggio", "Pazienza", "Rispetto", "Lealtà", "Speranza", "Amicizia", "Forza", "Invidia", "Perdono", "Fiducia", "Rabbia", "Gelosia", "Libertà", "Sincerità", "Orgoglio", "Umiltà", "END"];
+        const nomiCaselle = ["🏁", "IL RICORDO PIÙ ANTICO", "FIDUCIA", "Sconfitta", "INVIDIA", "GRIDO DI BATTAGLIA", "KRYPTONITE", "IDENTITÀ SEGRETA", "Qualità", "BUCO NERO", "Emozione", "SISTEMA IN CRASH", "Cicatrice", "Stanza", "Paura", "Sogno", "Comfort", "Nome", "Maestro", "Superpower", "Sollievo", "LO SCAMBIO", "Sfida", "SCUDO DIFENSIVO", "Valore", "PATTO DEGLI EROI", "Origini", "Like", "Labirinto", "Silenzio", "NO", "Squadra", "Dolore", "Coraggio", "Pazienza", "Rispetto", "Speranza", "Amicizia", "Forza", "ALLEANZA", "Perdono", "NO", "Rabbia", "Gelosia", "Libertà", "Sincerità", "Orgoglio", "Umiltà", "TRAGUARDO"];
         
         const suggerimenti = {
-            "Tradimento": "Hai mai vissuto un momento in cui un amico non ha mantenuto una promessa?",
-            "Il ricordo più antico": "Qual è la prima immagine che ti viene in mente se pensi a quando eri piccolo?",
-            "Avventura": "Qual è stata la sfida più emozionante o il viaggio più strano?",
-            "Sconfitta": "Racconta di quella volta che non ce l'hai fatta. Cosa hai imparato?",
-            "Like": "Quanto è importante per te l'approvazione degli altri?",
-            "Grido di battaglia": "Qual è la frase o la canzone che ti dà la carica?",
-            "Kryptonite": "Qual è il tuo punto debole?",
-            "Identità segreta": "C'è qualcosa di te che non mostri quasi a nessuno?",
-            "Qualità": "Qual è il pregio che i tuoi amici ti riconoscono di più?",
-            "Buco nero": "Racconta di un momento in cui ti sei sentito perso o triste.",
-            "Emozione": "Qual è l'emozione che provi più spesso?",
-            "Sistema in crash": "Quella volta che hai perso il controllo per la rabbia.",
-            "Cicatrice di battaglia": "Un segno che ti ricorda una difficoltà superata.",
-            "Stanza": "Descrivi il tuo rifugio. Cosa c'è nella tua camera che parla di te?",
-            "Paura": "Qual è la cosa che ti spaventa di più?",
-            "Sogno": "Qual è il tuo sogno più grande?",
-            "Comfort": "Qual è quel posto che ti fa sentire subito al sicuro?",
-            "Nome": "Se potessi scegliere un nome, quale sarebbe?",
-            "Maestro di vita": "C'è una persona a cui ti ispiri?",
-            "Superpower": "Se potessi avere un solo potere magico per un giorno, quale sceglieresti?",
-            "Sollievo": "L'ultima volta che hai fatto un respiro profondo e hai pensato: 'Meno male!'",
-            "Oblio": "C'è qualcosa del tuo passato che vorresti cancellare?",
-            "Sfida": "Qual è l'ostacolo più grande che hai affrontato?",
-            "Scudo difensivo": "Cosa fai per proteggerti quando qualcuno ti critica?",
-            "Valore": "Qual è la cosa più importante per te?",
-            "Patto degli eroi": "Hai mai fatto una promessa solenne a qualcuno? Quale?",
-            "Origine": "Da dove viene la tua forza?",
-            "Labirinto": "Racconta di una situazione complicata da cui non sapevi come uscire.",
-            "Silenzio": "Ti piace stare da solo con i tuoi pensieri? Motiva.",
-            "No": "Quella volta che hai dovuto dire di NO anche se era difficile.",
-            "Squadra": "Chi sono le persone su cui puoi contare?",
-            "Dolore": "Qual è stata la perdita che ti ha fatto soffrire di più?",
-            "Coraggio": "Racconta un momento in cui hai fatto qualcosa nonostante avessi paura.",
-            "Pazienza": "Sei una persona che sa aspettare o vuoi tutto e subito? Motiva.",
-            "Rispetto": "Cosa significa per te rispettare qualcuno?",
-            "Lealtà": "Saresti disposto a coprire un errore di un amico per lealtà?",
-            "Speranza": "In cosa speri per il mondo di domani?",
-            "Amicizia": "Cosa rende una persona un 'vero' amico?",
-            "Forza": "La vera forza sta nei muscoli o nella testa? Motiva la risposta.",
-            "Invidia": "Ti è mai capitato di desiderare qualcosa che apparteneva a un altro?",
-            "Perdono": "È più difficile perdonare gli altri o se stessi?",
-            "Fiducia": "Quanto tempo ci metti a fidarti di una persona nuova?",
-            "Rabbia": "Cosa ti fa arrabbiare così tanto da farti 'diventare verde'?",
-            "Gelosia": "Sei geloso dei tuoi amici o delle tue cose?",
-            "Libertà": "Cosa significa per te essere libero?",
-            "Sincerità": "Una bugia a fin di bene è comunque una bugia?",
-            "Orgoglio": "C'è qualcosa che hai fatto di cui vai fiero?",
-            "Umiltà": "Ammettere di aver sbagliato è un segno di debolezza o forza?",
-            "END": "Missione Compiuta! L'alleanza più forte non è quella che non cade mai, ma quella che si rialza insieme. Qual è la cosa più preziosa che porti via da questo percorso?"
+            "IL RICORDO PIÙ ANTICO": { testo: "Qual è la prima immagine che ti viene in mente se pensi a quando eri piccolo?", img: "ricordo.png" },
+            "FIDUCIA": { testo: "Immagina di essere in pericolo e di poter chiamare un solo amico per farti aiutare. Chi chiameresti tra i presenti?", img: "fiducia.png" },
+            "Sconfitta": { testo: "Racconta di quella volta che non ce l'hai fatta. Cosa hai imparato?", img: "sconfitta.png" },
+            "INVIDIA": { testo: "Ti è mai capitato di desiderare un talento che ha un altro eroe?", img: "invidia.png" },
+            "GRIDO DI BATTAGLIA": { testo: "Qual è la frase o la canzone che ti dà la carica?", img: "grido.png" },
+            "KRYPTONITE": { testo: "Qual è il tuo punto debole?", img: "krypto.png" },
+            "IDENTITÀ SEGRETA": { testo: "C'è qualcosa di te che non mostri quasi a nessuno?", img: "identitasegreta.png" },
+            "BUCO NERO": { testo: "Racconta di un momento in cui ti sei sentito perso o triste.", img: "buconero.png" },
+            "SISTEMA IN CRASH": { testo: "Quella volta che hai perso il controllo per la rabbia.", img: "crash.png" },
+            "Stanza": { testo: "Cosa c'è nella tua camera che parla di te?", img: "stanza.png" },
+            "Paura": { testo: "Qual è la cosa che ti spaventa di più?", img: "paura.png" },
+            "Sogno": { testo: "Qual è il tuo sogno più grande?", img: "sogno.png" },
+            "Nome": { testo: "Se potessi scegliere un nome di battaglia, quale sarebbe?", img: "nome.png" },
+            "Superpower": { testo: "Se potessi avere un solo potere magico per un giorno, quale sceglieresti?", img: "superpower.png" },
+            "LO SCAMBIO": { testo: "Se potessi fare uno scambio e prendere un talento da un tuo amico, cosa sceglieresti?", img: "scambio.png" },
+            "SCUDO DIFENSIVO": { testo: "Cosa fai per proteggerti quando qualcuno ti critica?", img: "scudo.png" },
+            "PATTO DEGLI EROI": { testo: "Hai mai fatto una promessa solenne a qualcuno?", img: "patto.png" },
+            "Origini": { testo: "Da dove viene la tua forza?", img: "origini.png" },
+            "Like": { testo: "Quanto è importante per te l'approvazione degli altri?", img: "like.png" },
+            "Silenzio": { testo: "Ti piace stare da solo con i tuoi pensieri?", img: "silenzio.png" },
+            "Squadra": { testo: "Chi sono le persone su cui puoi contare?", img: "squadra.jpg" },
+            "Coraggio": { testo: "Racconta un momento in cui hai agito nonostante la paura.", img: "coraggio.png" }, 
+            "Rispetto": { testo: "Cosa significa per te rispettare qualcuno?", img: "rispetto.png" },
+            "Speranza": { testo: "In cosa speri per il mondo di domani?", img: "speranza.png" },
+            "Amicizia": { testo: "Cosa rende una persona un 'vero' amico?", img: "amicizia.png" },
+            "Forza": { testo: "La vera forza sta nei muscoli o nella testa?", img: "forza.png" },
+            "Perdono": { testo: "È più difficile perdonare gli altri o se stessi?", img: "perdono.png" },
+            "Rabbia": { testo: "Cosa ti fa arrabbiare così tanto?", img: "rabbia.png" },
+            "Gelosia": { testo: "Sei geloso dei tuoi amici o delle tue cose?", img: "gelosia.png" },
+            "Libertà": { testo: "Cosa significa per te essere libero?", img: "libertà.png" },
+            "Sincerità": { testo: "Una bugia a fin di bene è comunque una bugia?", img: "sincerità.png" },
+            "Orgoglio": { testo: "C'è qualcosa che hai fatto di cui vai fiero?", img: "orgoglio.png" },
+            "Umiltà": { testo: "Ammettere di aver sbagliato è un segno di forza?", img: "umiltà.png" },
+            "NO": { testo: "Ricordi una volta in cui hai detto di no a qualcosa che non ti piaceva?", img: "no.png" },
+            "TRAGUARDO": { testo: "Congratulazioni! Sei arrivato alla fine, ma nessuno vince da solo. L'alleanza è accorgersi che la forza del singolo si moltiplica quando sostiene gli altri. Cosa porti nel tuo zaino degli eroi dopo questo viaggio insieme?", img: "a.png" }
         };
 
-        const allianceCells = [0, 4, 16, 22, 30]; 
-        const turboCells = [2, 10, 20, 32, 40];     
-        const stopCells = [12, 24, 34, 42];        
-        const amnesiaCells = [8, 18, 28, 36];      
-
-        let players = [];
-        let currentPlayerIndex = 0;
-        const totalCells = 50;
-        let timerInterval;
+        const allianceCells = [16, 22, 30, 39], turboCells = [10, 20, 32, 40], stopCells = [12, 24, 34, 42], amnesiaCells = [8, 18, 28, 36];
+        let players = [], currentPlayerIndex = 0, totalCells = nomiCaselle.length, timerInterval, isRolling = false;
 
         function showNameSetup(num) {
             document.getElementById('setup-screen').style.display = 'none';
             document.getElementById('name-screen').style.display = 'flex';
             const container = document.getElementById('inputs-container');
             container.innerHTML = "";
+            const icons = ['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'];
             for(let i=0; i<num; i++) {
-                container.innerHTML += `<div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:5px;"><div style="font-size:2rem; background:rgba(255,255,255,0.1); border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid var(--super-purple);">${['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'][i]}</div><input type="text" id="name-${i}" placeholder="Eroe ${i+1}" style="padding:8px; width:65%; border-radius:10px; font-size:1rem; border:none; font-family:'Roboto', sans-serif; font-weight:bold;"></div>`;
+                container.innerHTML += `<div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:5px;"><div style="font-size:2rem; background:rgba(255,255,255,0.1); border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid var(--super-purple);">${icons[i]}</div><input type="text" id="name-${i}" placeholder="Eroe ${i+1}" style="padding:8px; width:65%; border-radius:10px; font-size:1rem; border:none; font-family:'Roboto', sans-serif; font-weight:bold;"></div>`;
             }
         }
-        function goBackToSetup() { document.getElementById('name-screen').style.display = 'none'; document.getElementById('setup-screen').style.display = 'flex'; players = []; }
-        
+
+        function goBackToSetup() {
+            document.getElementById('name-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'flex';
+        }
+
         function initGame() {
             const inputs = document.querySelectorAll('#inputs-container input');
+            const icons = ['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'];
             players = [];
-            inputs.forEach((input, i) => { 
-                players.push({ id: i, name: (input.value.trim() || `Eroe ${i+1}`).toUpperCase(), pos: 0, icon: ['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'][i], frozen: false, justAmnesied: false }); 
+            inputs.forEach((input, i) => {
+                players.push({ id: i, name: (input.value.trim() || `Eroe ${i+1}`).toUpperCase(), pos: 0, icon: icons[i], frozen: false, justAmnesied: false });
             });
             document.getElementById('name-screen').style.display = 'none';
             drawPath();
         }
 
         function drawPath() {
-            const area = document.getElementById('game-area'); area.innerHTML = "";
-            const areaRect = area.getBoundingClientRect();
-            const cols = 10; const cellW = 62;
-            const paddingX = (areaRect.width - (cols * cellW)) / (cols + 1);
-            const paddingY = (areaRect.height - (5 * cellW)) / 6;
-
+            const area = document.getElementById('game-area'), areaRect = area.getBoundingClientRect();
+            const cols = 10, cellW = 62, paddingX = (areaRect.width - (cols * cellW)) / (cols + 1), paddingY = (areaRect.height - (5 * cellW)) / 6;
+            let pathData = "";
+            area.innerHTML = '<svg id="path-svg"><path id="main-path-line" d="" /></svg>';
             for (let i = 0; i < totalCells; i++) {
-                const cell = document.createElement('div');
-                cell.className = `cell c-${i % 4}`;
+                const cell = document.createElement('div'); cell.className = `cell c-${i % 4}`;
+                if (i === 0) cell.classList.add('cell-start');
                 if (turboCells.includes(i)) cell.classList.add('cell-turbo');
                 if (allianceCells.includes(i)) cell.classList.add('cell-bonus');
                 if (amnesiaCells.includes(i)) cell.classList.add('cell-amnesia');
                 if (stopCells.includes(i)) cell.classList.add('cell-stop');
                 if (i === totalCells - 1) cell.classList.add('cell-cup');
-
                 cell.id = `cell-${i}`;
-                let r = Math.floor(i / cols); let c = i % cols;
+                let r = Math.floor(i / cols), c = i % cols;
                 if (r % 2 !== 0) c = (cols - 1) - c;
-                cell.style.left = `${paddingX + c * (cellW + paddingX)}px`;
-                cell.style.top = `${paddingY + r * (cellW + paddingY)}px`;
+                const leftPos = paddingX + c * (cellW + paddingX), topPos = paddingY + r * (cellW + paddingY);
+                cell.style.left = `${leftPos}px`; cell.style.top = `${topPos}px`;
+                const centerX = leftPos + cellW / 2, centerY = topPos + cellW / 2;
+                if (i === 0) pathData += `M ${centerX} ${centerY}`; else pathData += ` L ${centerX} ${centerY}`;
                 
-                if (i === totalCells - 1) cell.innerHTML = "🏆";
+                if (i === 0) cell.innerHTML = "🏁";
+                else if (i === totalCells - 1) cell.innerHTML = "🏆";
                 else if (turboCells.includes(i)) cell.innerHTML = "⚡";
-                else if (stopCells.includes(i)) cell.innerHTML = `<span>🛑</span><span class="stop-text">STOP</span>`;
+                else if (stopCells.includes(i)) cell.innerHTML = "<span>🛑</span><span style='font-size:0.5rem;'>STOP</span>";
                 else if (amnesiaCells.includes(i)) cell.innerHTML = "🌀";
                 else if (allianceCells.includes(i)) cell.innerHTML = "🤝";
                 else cell.innerText = nomiCaselle[i];
                 area.appendChild(cell);
             }
-
+            document.getElementById('main-path-line').setAttribute("d", pathData);
             players.forEach((p, i) => {
-                const token = document.createElement('div'); 
-                token.id = `player-${i}`;
-                token.className = 'player-token'; 
-                token.innerHTML = p.icon; 
-                area.appendChild(token);
+                const token = document.createElement('div'); token.id = `player-${i}`; token.className = 'player-token'; token.innerHTML = p.icon; area.appendChild(token);
             });
-            updatePositions();
-            updateTurnInfo();
+            updatePositions(); updateTurnInfo();
         }
 
         function updatePositions() {
             players.forEach((p, i) => {
-                const cell = document.getElementById(`cell-${p.pos}`);
-                const token = document.getElementById(`player-${i}`);
-                if (cell && token) { 
-                    token.style.left = (parseInt(cell.style.left) + 10 + (i*4)) + 'px'; 
-                    token.style.top = (parseInt(cell.style.top) + 8) + 'px'; 
+                const cell = document.getElementById(`cell-${p.pos}`), token = document.getElementById(`player-${i}`);
+                if (cell && token) {
+                    token.style.left = (parseInt(cell.style.left) + 10 + (i*3)) + 'px';
+                    token.style.top = (parseInt(cell.style.top) + 8) + 'px';
                 }
-                if (token) token.style.opacity = p.frozen ? "0.3" : "1";
+                token.style.opacity = p.frozen ? "0.3" : "1";
             });
         }
 
@@ -322,146 +342,151 @@
         }
 
         function playTurn() {
+            if (isRolling) return;
             let p = players[currentPlayerIndex];
             p.justAmnesied = false;
-            if(p.frozen) { 
-                p.frozen = false; 
-                updatePositions(); 
-                document.getElementById('cap-msg').innerText = p.name + " riparte!"; 
-                nextTurn(); 
-                return; 
+            
+            if(p.frozen) {
+                p.frozen = false; updatePositions();
+                document.getElementById('cap-msg').innerText = p.name + " riparte!";
+                nextTurn(); return;
             }
-            document.getElementById('roll-btn').disabled = true;
-            let count = 0; const diceIcons = ["⚀", "⚁", "⚂", "⚃"];
-            const anim = setInterval(() => {
-                document.getElementById('dice-visual').innerText = diceIcons[Math.floor(Math.random() * 4)];
-                if (++count > 12) { 
-                    clearInterval(anim); 
-                    const roll = Math.floor(Math.random() * 4) + 1; 
-                    document.getElementById('dice-visual').innerText = diceIcons[roll-1]; 
-                    movePlayer(roll); 
-                }
-            }, 80);
+
+            isRolling = true;
+            const dice = document.getElementById('dice-visual');
+            dice.classList.add('dice-rolling');
+            
+            setTimeout(() => {
+                dice.classList.remove('dice-rolling');
+                const roll = Math.floor(Math.random() * 4) + 1;
+                const rotations = { 1: "rotateX(0deg) rotateY(0deg)", 2: "rotateY(-90deg)", 3: "rotateY(-180deg)", 4: "rotateY(90deg)" };
+                dice.style.transform = rotations[roll];
+                
+                setTimeout(() => {
+                    movePlayer(roll);
+                    isRolling = false;
+                }, 800);
+            }, 1000);
         }
 
         async function movePlayer(steps) {
             let p = players[currentPlayerIndex];
-            for (let i = 0; i < steps; i++) { 
-                if (p.pos >= totalCells - 1) break; 
-                p.pos++; 
-                updatePositions(); 
-                await new Promise(r => setTimeout(r, 400)); 
+            for (let i = 0; i < steps; i++) {
+                if (p.pos >= totalCells - 1) break;
+                p.pos++; updatePositions(); await new Promise(r => setTimeout(r, 400));
             }
             checkLanding(p);
         }
 
-        function checkLanding(p) {
-            if (amnesiaCells.includes(p.pos) && !p.justAmnesied) {
-                openWordModal("🌀 AMNESIA", "Torni indietro di 2 passi!");
-            } 
-            else if (turboCells.includes(p.pos)) handleTurbo(p);
-            else if (stopCells.includes(p.pos)) { 
-                p.frozen = true; 
-                updatePositions(); 
-                document.getElementById('cap-msg').innerText = "🛑 Fermo un turno!"; 
-                nextTurn(); 
-            }
-            else if (allianceCells.includes(p.pos)) handleAllianceBonus(p);
-            else openWordModal(nomiCaselle[p.pos]);
-        }
-
-        async function handleTurbo(p) {
-            document.getElementById('cap-msg').innerText = "⚡ TURBO! +2 passi!";
-            await new Promise(r => setTimeout(r, 800));
-            for (let i = 0; i < 2; i++) { 
-                if (p.pos >= totalCells - 1) break; 
-                p.pos++; 
-                updatePositions(); 
-                await new Promise(r => setTimeout(r, 400)); 
-            }
-            checkLanding(p);
-        }
-        
-        function openWordModal(title, desc = "") {
-            const teamImg = document.getElementById('final-team-img');
-            const timerSect = document.getElementById('timer-section');
-            const closeBtn = document.getElementById('close-modal-btn');
-            
-            if (title === "END") {
-                teamImg.style.display = "block";
-                timerSect.style.display = "none";
-                closeBtn.style.display = "block";
-            } else {
-                teamImg.style.display = "none";
-                const isAmnesia = title.includes("AMNESIA");
-                timerSect.style.display = isAmnesia ? 'none' : 'block';
-                closeBtn.style.display = isAmnesia ? 'block' : 'none';
-                if (!isAmnesia) startTimer();
-            }
-            
-            document.getElementById('display-word').innerText = title.toUpperCase();
-            let text = desc || (suggerimenti[title] ? suggerimenti[title] : "Condividi il tuo pensiero.");
-            document.getElementById('display-desc').innerText = text;
-            document.getElementById('word-modal').style.display = 'flex';
-        }
-
-        function startTimer() {
-            let timeLeft = 60; const bar = document.getElementById('timer-bar'); const txt = document.getElementById('timer-text');
-            bar.style.width = '100%'; if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => { 
-                timeLeft--; 
-                txt.innerText = timeLeft + "s"; 
-                bar.style.width = (timeLeft / 60 * 100) + "%"; 
-                if (timeLeft <= 0) { 
-                    clearInterval(timerInterval); 
-                    document.getElementById('close-modal-btn').style.display = 'block'; 
-                } 
-            }, 1000);
-        }
-        
-        async function closeWordModal() {
-            clearInterval(timerInterval); 
-            let p = players[currentPlayerIndex];
-            document.getElementById('word-modal').style.display = 'none';
+        async function checkLanding(p) {
+            // 1. CASO AMNESIA
             if (amnesiaCells.includes(p.pos)) {
-                p.justAmnesied = true;
+                document.getElementById('cap-msg').innerText = "🌀 Amnesia! Indietro di 2!";
+                await new Promise(r => setTimeout(r, 1000));
                 for (let i = 0; i < 2; i++) { if (p.pos <= 0) break; p.pos--; updatePositions(); await new Promise(r => setTimeout(r, 400)); }
+                
+                // Dopo il rinculo, ricontrolla dove sei (potrebbe essere una Team o una normale)
                 checkLanding(p); 
                 return;
+            } 
+            
+            // 2. CASO TURBO
+            if (turboCells.includes(p.pos)) {
+                document.getElementById('cap-msg').innerText = "⚡ Turbo! Avanti di 2!";
+                await new Promise(r => setTimeout(r, 1000));
+                for (let i = 0; i < 2; i++) { if (p.pos >= totalCells - 1) break; p.pos++; updatePositions(); await new Promise(r => setTimeout(r, 400)); }
+                checkLanding(p); // Ricontrolla dove atterra col turbo
+                return;
+            } 
+
+            // 3. CASO STOP
+            if (stopCells.includes(p.pos)) {
+                p.frozen = true; updatePositions(); 
+                document.getElementById('cap-msg').innerText = "🛑 Fermo un turno!"; 
+                nextTurn();
+                return;
+            } 
+
+            // 4. CASO TEAM (L'alleanza che salva chi è dietro)
+            if (allianceCells.includes(p.pos)) { 
+                handleAllianceBonus(p); 
+                return;
+            } 
+
+            // 5. CASO TRAGUARDO
+            if (p.pos === totalCells - 1) {
+                openWordModal("TRAGUARDO");
+                return;
+            } 
+
+            // 6. CASO CASELLA NORMALE (RIFLESSIONE)
+            if (p.pos > 0) {
+                openWordModal(nomiCaselle[p.pos]);
+            } else {
+                nextTurn();
             }
-            if (p.pos === totalCells - 1) { 
-                alert("CONGRATULAZIONI!"); 
-                location.reload(); 
-            } else nextTurn();
         }
 
-        function nextTurn() { 
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.length; 
-            updateTurnInfo(); 
-            document.getElementById('roll-btn').disabled = false; 
-        }
-        
         function handleAllianceBonus(currentPlayer) {
             const backwardOnes = players.filter(p => p.id !== currentPlayer.id && p.pos < currentPlayer.pos);
             if (backwardOnes.length === 0) { 
-                document.getElementById('cap-msg').innerText = "🤝 Nessun alleato!"; 
-                setTimeout(nextTurn, 1500); 
+                document.getElementById('cap-msg').innerText = "🤝 Nessun alleato da aiutare!"; 
+                setTimeout(() => nextTurn(), 1000);
                 return; 
             }
-            document.getElementById('cap-msg').innerText = "🤝 BONUS TEAM!";
-            const screen = document.getElementById('bonus-screen');
-            const container = document.getElementById('bonus-options');
+            const screen = document.getElementById('bonus-screen'), container = document.getElementById('bonus-options');
             container.innerHTML = ""; screen.style.display = "flex";
             backwardOnes.forEach(p => {
                 const btn = document.createElement('button'); btn.className = "btn-action"; btn.innerText = `${p.icon} ${p.name}`;
                 btn.onclick = () => { 
-                    p.pos = currentPlayer.pos; p.frozen = false; updatePositions(); 
+                    p.pos = currentPlayer.pos; 
+                    p.frozen = false; 
+                    updatePositions(); 
                     screen.style.display = "none"; 
                     nextTurn(); 
                 };
                 container.appendChild(btn);
             });
         }
+
+        function openWordModal(title) {
+            const teamImg = document.getElementById('final-team-img'), cellImg = document.getElementById('cell-img'), timerSect = document.getElementById('timer-section'), closeBtn = document.getElementById('close-modal-btn');
+            cellImg.style.display = "none"; teamImg.style.display = "none";
+            
+            if (title === "TRAGUARDO") {
+                teamImg.style.display = "block"; timerSect.style.display = "none"; closeBtn.style.display = "block";
+            } else {
+                const data = suggerimenti[title];
+                if (data?.img) { cellImg.src = data.img; cellImg.style.display = "block"; }
+                timerSect.style.display = 'block';
+                closeBtn.style.display = 'none';
+                startTimer();
+            }
+            document.getElementById('display-word').innerText = title;
+            document.getElementById('display-desc').innerText = suggerimenti[title]?.testo || "Condividi il tuo pensiero.";
+            document.getElementById('word-modal').style.display = 'flex';
+        }
+
+        function startTimer() {
+            let timeLeft = 60; const bar = document.getElementById('timer-bar'), txt = document.getElementById('timer-text');
+            bar.style.width = '100%'; if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--; txt.innerText = timeLeft + "s"; bar.style.width = (timeLeft / 60 * 100) + "%";
+                if (timeLeft <= 0) { clearInterval(timerInterval); closeWordModal(); }
+            }, 1000);
+        }
+
+        async function closeWordModal() {
+            clearInterval(timerInterval); 
+            let p = players[currentPlayerIndex];
+            document.getElementById('word-modal').style.display = 'none';
+            if (p.pos === totalCells - 1) {
+                document.getElementById('winner-announcement').innerText = `VITTORIA DI: ${p.icon} ${p.name}`;
+                document.getElementById('time-up-screen').style.display = 'flex';
+            } else { nextTurn(); }
+        }
+
+        function nextTurn() { currentPlayerIndex = (currentPlayerIndex + 1) % players.length; updateTurnInfo(); }
     </script>
 </body>
 </html>
