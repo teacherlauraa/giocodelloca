@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Percorso delle Alleanze</title>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>IL PERCORSO DELLE ALLEANZE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --fluo-green: #39FF14; --super-purple: #9D00FF; --hero-red: #FF0000;
@@ -16,14 +16,23 @@
             font-family: 'Roboto', sans-serif; background: #0a0a12; color: white;
             margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
         }
+        
+        h1, h2, .modal-word { 
+            font-family: 'Roboto', sans-serif; 
+            font-weight: 900; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); 
+        }
+
         h1 { 
-            font-family: 'Luckiest Guy', cursive; color: var(--hero-yellow); 
-            text-shadow: 3px 3px 0px var(--hero-red); font-size: 2.2rem; margin: 5px 0; text-align: center;
+            color: var(--hero-yellow); 
+            font-size: 2rem; margin: 10px 0; text-align: center;
         }
         
         .main-container { 
             display: flex; flex-grow: 1; width: 100vw; padding: 0 20px; gap: 15px; 
-            align-items: center; height: 80vh;
+            align-items: center; height: 75vh;
         }
         #sidebar { 
             width: 250px; display: flex; flex-direction: column; align-items: center; 
@@ -37,7 +46,7 @@
         .legend-sym { font-size: 1.2rem; width: 25px; text-align: center; }
         
         #cap-img { 
-            width: auto; max-width: 100%; height: 140px; object-fit: contain;
+            width: auto; max-width: 100%; height: 120px; object-fit: contain;
             filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2)); margin-bottom: 5px;
         }
         .cap-bubble {
@@ -77,28 +86,34 @@
         }
 
         .modal-content {
-            background: #1e1e2f; padding: 15px; border: 6px solid var(--hero-yellow);
-            border-radius: 25px; text-align: center; width: 90%; max-width: 500px;
-            max-height: 90vh; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            background: #1e1e2f; padding: 30px; border: 8px solid var(--hero-yellow);
+            border-radius: 30px; text-align: center; width: 95%; max-width: 700px;
+            height: auto; max-height: 95vh; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; overflow: hidden; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
         .modal-word { 
-            font-family: 'Luckiest Guy', cursive; font-size: 2rem; color: var(--hero-yellow); 
-            margin: 5px 0; text-transform: uppercase;
+            font-size: 3rem; color: var(--hero-yellow); 
+            margin: 0 0 20px 0; 
+            line-height: 1;
         }
 
         #cell-img, #final-team-img { 
-            display: none; width: auto; max-width: 100%; max-height: 180px; 
-            object-fit: contain; margin: 10px auto; border-radius: 12px; border: 3px solid var(--turbo-cyan);
+            display: none; width: auto; max-width: 100%; max-height: 200px; 
+            object-fit: contain; margin: 10px auto; border-radius: 15px; border: 4px solid var(--turbo-cyan);
         }
 
-        #display-desc { font-size: 1.1rem; color:#fff; font-weight: bold; line-height: 1.3; margin: 10px 0; padding: 0 10px; }
+        #display-desc { 
+            font-size: 1.8rem; color:#fff; font-weight: 900; 
+            line-height: 1.2; margin: 20px 0; padding: 0 15px; 
+            text-transform: uppercase;
+        }
 
-        .btn-action { font-family: 'Luckiest Guy', cursive; font-size: 1.4rem; padding: 12px 25px; cursor: pointer; background: var(--super-purple); color: white; border: none; border-radius: 12px; box-shadow: 0 5px 0 #4b0082; margin: 10px; transition: 0.2s; }
+        .btn-action { font-family: 'Roboto', sans-serif; font-weight: 900; font-size: 1.5rem; padding: 15px 40px; cursor: pointer; background: var(--super-purple); color: white; border: none; border-radius: 12px; box-shadow: 0 5px 0 #4b0082; margin: 10px; transition: 0.2s; text-transform: uppercase; }
         .btn-action:active { transform: translateY(4px); box-shadow: none; }
         
-        .home-btn { background: var(--hero-red); color: white; border: none; border-radius: 12px; width: 50px; height: 50px; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #800; }
+        .home-btn { background: var(--hero-red); color: white; border: none; border-radius: 12px; width: 60px; height: 60px; font-size: 2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #800; }
 
         .player-token { width: 42px; height: 42px; position: absolute; z-index: 100; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); font-size: 2.4rem; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 5px black); }
         
@@ -127,8 +142,8 @@
         .dice-rolling { animation: spin 0.3s linear infinite; pointer-events: none; }
         @keyframes spin { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
 
-        #turn-info { font-family: 'Luckiest Guy', cursive; font-size: 1.8rem; color: #ccc; text-align: left; flex-shrink: 0; margin-right: 10px; }
-        .timer-bar-container { width: 100%; height: 12px; background: #333; border-radius: 10px; margin: 5px 0; overflow: hidden; border: 2px solid #555; }
+        #turn-info { font-family: 'Roboto', sans-serif; font-weight: 900; font-size: 1.8rem; color: #ccc; text-align: left; flex-shrink: 0; margin-right: 10px; }
+        .timer-bar-container { width: 100%; height: 15px; background: #333; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 2px solid #555; }
         #timer-bar { width: 100%; height: 100%; background: var(--fluo-green); transition: width 1s linear; }
     </style>
 </head>
@@ -157,13 +172,13 @@
     <div id="word-modal" style="display:none;">
         <div class="modal-content">
             <h2 id="display-word" class="modal-word">TITOLO</h2>
-            <img id="cell-img" src="" alt="Dettaglio Casella">
-            <img id="final-team-img" src="a.png" alt="Team Alleanze">
+            <img id="cell-img" src="" alt="DETTAGLIO CASELLA">
+            <img id="final-team-img" src="a.png" alt="TEAM ALLEANZE">
             <p id="display-desc"></p>
             <div id="timer-section" style="width: 100%;">
                 <div class="timer-bar-container"><div id="timer-bar"></div></div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
-                    <div id="timer-text" style="font-family:'Luckiest Guy', cursive; font-size: 2rem; color:var(--fluo-green);">60s</div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+                    <div id="timer-text" style="font-family:'Roboto', sans-serif; font-weight: 900; font-size: 2.5rem; color:var(--fluo-green);">60S</div>
                     <button class="home-btn" onclick="closeWordModal()">🏠</button>
                 </div>
             </div>
@@ -173,16 +188,16 @@
 
     <div id="bonus-screen" style="display:none;">
         <div class="setup-box" style="text-align: center;">
-            <h1 style="font-family: 'Luckiest Guy'; color: var(--hero-yellow);">🤝 BONUS TEAM</h1>
-            <p style="color:white; font-weight:bold; font-size: 1.1rem; margin-bottom:15px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px;">Scegli un alleato rimasto indietro da portare sulla tua casella!</p>
+            <h1>🤝 BONUS TEAM</h1>
+            <p style="color:white; font-weight:900; font-size: 1.1rem; margin-bottom:15px; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; text-transform: uppercase;">SCEGLI UN ALLEATO RIMASTO INDIETRO DA PORTARE SULLA TUA CASELLA!</p>
             <div id="bonus-options" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;"></div>
         </div>
     </div>
 
     <div id="time-up-screen" style="display:none;">
         <div class="modal-content">
-            <h1 style="color:var(--hero-yellow); font-size: 2.5rem;">MISSIONE COMPIUTA!</h1>
-            <h2 id="winner-announcement" style="color:white; font-size: 1.6rem; margin: 20px 0;"></h2>
+            <h1>MISSIONE COMPIUTA!</h1>
+            <h2 id="winner-announcement" style="color:white; font-size: 2rem; margin: 20px 0;"></h2>
             <button class="btn-action" onclick="location.reload()">NUOVA PARTITA</button>
         </div>
     </div>
@@ -197,14 +212,14 @@
                 <div class="legend-item"><span class="legend-sym">🌀</span> <span><b>AMNESIA:</b> -2 PASSI</span></div>
                 <div class="legend-item"><span class="legend-sym">🤝</span> <span><b>TEAM:</b> SALVA CHI È INDIETRO</span></div>
             </div>
-            <img id="cap-img" src="capitan.png" alt="Capitan America">
-            <div id="cap-msg" class="cap-bubble">"Clicca sul dado, soldato!"</div>
+            <img id="cap-img" src="capitan.png" alt="CAPITAN AMERICA">
+            <div id="cap-msg" class="cap-bubble">"CLICCA SUL DADO, SOLDATO!"</div>
         </div>
         <div id="game-area"><svg id="path-svg"><path id="main-path-line" d="" /></svg></div>
     </div>
 
     <div class="ui-panel">
-        <div id="turn-info">In attesa...</div>
+        <div id="turn-info">IN ATTESA...</div>
         <div class="dice-container" onclick="playTurn()">
             <div id="dice-visual">
                 <div class="dice-face f-1">⚀</div>
@@ -218,44 +233,44 @@
     </div>
 
     <script>
-        const nomiCaselle = ["🏁", "IL RICORDO PIÙ ANTICO", "FIDUCIA", "Sconfitta", "INVIDIA", "GRIDO DI BATTAGLIA", "KRYPTONITE", "IDENTITÀ SEGRETA", "Qualità", "BUCO NERO", "Emozione", "SISTEMA IN CRASH", "Cicatrice", "Stanza", "Paura", "Sogno", "Comfort", "Nome", "Maestro", "Superpower", "Sollievo", "LO SCAMBIO", "Sfida", "SCUDO DIFENSIVO", "Valore", "PATTO DEGLI EROI", "Origini", "Like", "Labirinto", "Silenzio", "NO", "Squadra", "Dolore", "Coraggio", "Pazienza", "Rispetto", "Speranza", "Amicizia", "Forza", "ALLEANZA", "Perdono", "NO", "Rabbia", "Gelosia", "Libertà", "Sincerità", "Orgoglio", "Umiltà", "TRAGUARDO"];
+        const nomiCaselle = ["🏁", "IL RICORDO PIÙ ANTICO", "FIDUCIA", "SCONFITTA", "INVIDIA", "GRIDO DI BATTAGLIA", "KRYPTONITE", "IDENTITÀ SEGRETA", "QUALITÀ", "BUCO NERO", "EMOZIONE", "SISTEMA IN CRASH", "CICATRICE", "STANZA", "PAURA", "SOGNO", "COMFORT", "NOME", "MAESTRO", "SUPERPOWER", "SOLLIEVO", "LO SCAMBIO", "SFIDA", "SCUDO DIFENSIVO", "VALORE", "PATTO DEGLI EROI", "ORIGINI", "LIKE", "LABIRINTO", "SILENZIO", "NO", "SQUADRA", "DOLORE", "CORAGGIO", "PAZIENZA", "RISPETTO", "SPERANZA", "AMICIZIA", "FORZA", "ALLEANZA", "PERDONO", "NO", "RABBIA", "GELOSIA", "LIBERTÀ", "SINCERITÀ", "ORGOGLIO", "UMILTÀ", "TRAGUARDO"];
         
         const suggerimenti = {
-            "IL RICORDO PIÙ ANTICO": { testo: "Qual è la tua prima memoria da piccolo?", img: "ricordo.png" },
-            "FIDUCIA": { testo: "Sei in pericolo. Puoi chiamare un solo amico per farti aiutare. Chi chiami?", img: "fiducia.png" },
-            "Sconfitta": { testo: "Cosa hai imparato l'ultima volta che hai perso?", img: "sconfitta.png" },
-            "INVIDIA": { testo: "Ti è mai capitato di desiderare un talento che ha un altro eroe?", img: "invidia.png" },
-            "GRIDO DI BATTAGLIA": { testo: "Qual è la frase o la canzone che ti dà la carica?", img: "grido.png" },
-            "KRYPTONITE": { testo: "Qual è il tuo punto debole?", img: "krypto.png" },
-            "IDENTITÀ SEGRETA": { testo: "C'è qualcosa di te che non mostri quasi a nessuno?", img: "identitasegreta.png" },
-            "BUCO NERO": { testo: "Racconta di un momento in cui ti sei sentito triste.", img: "buconero.png" },
-            "SISTEMA IN CRASH": { testo: "Quella volta che hai perso il controllo per la rabbia.", img: "crash.png" },
-            "Stanza": { testo: "Cosa c'è nella tua camera che parla di te?", img: "stanza.png" },
-            "Paura": { testo: "Qual è la cosa che ti fa più paura?", img: "paura.png" },
-            "Sogno": { testo: "Qual è il tuo sogno più grande?", img: "sogno.png" },
-            "Nome": { testo: "Se potessi scegliere un nome di battaglia, quale sarebbe?", img: "nome.png" },
-            "Superpower": { testo: "Se potessi avere un solo potere magico per un giorno, quale sceglieresti?", img: "superpower.png" },
-            "LO SCAMBIO": { testo: "Prendi una qualità da un amico: cosa scegli?", img: "scambio.png" },
-            "SCUDO DIFENSIVO": { testo: "Come reagisci quando qualcuno ti critica?", img: "scudo.png" },
-            "PATTO DEGLI EROI": { testo: "Hai mai fatto una promessa a qualcuno?", img: "patto.png" },
-            "Origini": { testo: "Da dove viene la tua forza?", img: "origini.png" },
-            "Like": { testo: "Ti importa molto del giudizio degli altri?", img: "like.png" },
-            "Silenzio": { testo: "Ti piace stare da solo con i tuoi pensieri?", img: "silenzio.png" },
-            "Squadra": { testo: "Chi sono le persone su cui puoi contare?", img: "squadra.jpg" },
-            "Coraggio": { testo: "Racconta un'azione coraggiosa che hai fatto.", img: "coraggio.png" }, 
-            "Rispetto": { testo: "Cosa significa per te rispettare qualcuno?", img: "rispetto.png" },
-            "Speranza": { testo: "In cosa speri per il tuo futuro?", img: "speranza.png" },
-            "Amicizia": { testo: "Cosa rende una persona un 'vero' amico?", img: "amicizia.png" },
-            "Forza": { testo: "La vera forza sta nei muscoli o nella testa?", img: "forza.png" },
-            "Perdono": { testo: "Riesci a perdonare chi ha sbagliato con te?", img: "perdono.png" },
-            "Rabbia": { testo: "Cosa ti fa arrabbiare?", img: "rabbia.png" },
-            "Gelosia": { testo: "Sei geloso dei tuoi amici o delle tue cose?", img: "gelosia.png" },
-            "Libertà": { testo: "Cosa significa per te essere libero?", img: "libertà.png" },
-            "Sincerità": { testo: "Dici sempre la verità?", img: "sincerità.png" },
-            "Orgoglio": { testo: "Di cosa vai più fiero?", img: "orgoglio.png" },
-            "Umiltà": { testo: "Sai chiedere scusa quando sbagli?", img: "umiltà.png" },
-            "NO": { testo: "Ricorda una volta in cui hai detto 'NO' con coraggio", img: "no.png" },
-            "TRAGUARDO": { testo: "Congratulazioni! Sei arrivato alla fine, ma nessuno vince da solo. L'alleanza è accorgersi che la forza del singolo si moltiplica quando sostiene gli altri. Cosa porti nel tuo zaino degli eroi dopo questo viaggio insieme?", img: "a.png" }
+            "IL RICORDO PIÙ ANTICO": { testo: "QUAL È LA TUA PRIMA MEMORIA DA PICCOLO?", img: "ricordo.png" },
+            "FIDUCIA": { testo: "SEI IN PERICOLO. PUOI CHIAMARE UN SOLO AMICO PER FARTI AIUTARE. CHI CHIAMI?", img: "fiducia.png" },
+            "SCONFITTA": { testo: "COSA HAI IMPARATO L'ULTIMA VOLTA CHE HAI PERSO?", img: "sconfitta.png" },
+            "INVIDIA": { testo: "TI È MAI CAPITATO DI DESIDERARE UN TALENTO CHE HA UN ALTER EROE?", img: "invidia.png" },
+            "GRIDO DI BATTAGLIA": { testo: "QUAL È LA FRASE O LA CANZONE CHE TI DÀ LA CARICA?", img: "grido.png" },
+            "KRYPTONITE": { testo: "QUAL È IL TUO PUNTO DEBOLE?", img: "krypto.png" },
+            "IDENTITÀ SEGRETA": { testo: "C'È QUALCOSA DI TE CHE NON MOSTRI QUASI A NESSUNO?", img: "identitasegreta.png" },
+            "BUCO NERO": { testo: "RACCONTA DI UN MOMENTO IN CUI TI SEI SENTITO TRISTE.", img: "buconero.png" },
+            "SISTEMA IN CRASH": { testo: "QUELLA VOLTA CHE HAI PERSO IL CONTROLLO PER LA RABBIA.", img: "crash.png" },
+            "STANZA": { testo: "COSA C'È NELLA TUA CASELLA CHE PARLA DI TE?", img: "stanza.png" },
+            "PAURA": { testo: "QUAL È LA COSA CHE TI FA PIÙ PAURA?", img: "paura.png" },
+            "SOGNO": { testo: "QUAL È IL TUO SOGNO PIÙ GRANDE?", img: "sogno.png" },
+            "NOME": { testo: "SE POTESSI SCEGLIERE UN NOME DI BATTAGLIA, QUALE SAREBBE?", img: "nome.png" },
+            "SUPERPOWER": { testo: "SE POTESSI AVERE UN SOLO POTERE MAGICO PER UN GIORNO, QUALE SCEGLIERESTI?", img: "superpower.png" },
+            "LO SCAMBIO": { testo: "PRENDI UNA QUALITÀ DA UN AMICO: COSA SCEGLI?", img: "scambio.png" },
+            "SCUDO DIFENSIVO": { testo: "COME REAGISCI QUANDO QUALCUNO TI CRITICA?", img: "scudo.png" },
+            "PATTO DEGLI EROI": { testo: "HAI MAI FATTO UNA PROMESSA A QUALCUNO?", img: "patto.png" },
+            "ORIGINI": { testo: "DA DOVE VIENE LA TUA FORZA?", img: "origini.png" },
+            "LIKE": { testo: "TI IMPORTA MOLTO DEL GIUDIZIO DEGLI ALTRI?", img: "like.png" },
+            "SILENZIO": { testo: "TI PIACE STARE DA SOLO CON I TUOI PENSIERI?", img: "silenzio.png" },
+            "SQUADRA": { testo: "CHI SONO LE PERSONE SU CUI PUOI CONTARE?", img: "squadra.jpg" },
+            "CORAGGIO": { testo: "RACCONTA UN'AZIONE CORAGGIOSA CHE HAI FATTO.", img: "coraggio.png" }, 
+            "RISPETTO": { testo: "COSA SIGNIFICA PER TE RISPETTARE QUALCUNO?", img: "rispetto.png" },
+            "SPERANZA": { testo: "IN COSA SPERI PER IL TUO FUTURO?", img: "speranza.png" },
+            "AMICIZIA": { testo: "COSA RENDE UNA PERSONA UN 'VERO' AMICO?", img: "amicizia.png" },
+            "FORZA": { testo: "LA VERA FORZA STA NEI MUSCOLI O NELLA TESTA?", img: "forza.png" },
+            "PERDONO": { testo: "RIESCI A PERDONARE CHI HA SBAGLIATO CON TE?", img: "perdono.png" },
+            "RABBIA": { testo: "COSA TI FA ARRABBIARE?", img: "rabbia.png" },
+            "GELOSIA": { testo: "SEI GELOSO DEI TUOI AMICI O DELLE TUE COSE?", img: "gelosia.png" },
+            "LIBERTÀ": { testo: "COSA SIGNIFICA PER TE ESSERE LIBERO?", img: "libertà.png" },
+            "SINCERITÀ": { testo: "DICI SEMPRE LA VERITÀ?", img: "sincerità.png" },
+            "ORGOGLIO": { testo: "DI COSA VAI PIÙ FIERO?", img: "orgoglio.png" },
+            "UMILTÀ": { testo: "SAI CHIEDERE SCUSA QUANDO SBAGLI?", img: "umiltà.png" },
+            "NO": { testo: "RICORDA UNA VOLTA IN CUI HAI DETTO 'NO' CON CORAGGIO", img: "no.png" },
+            "TRAGUARDO": { testo: "CONGRATULAZIONI!     SEI ARRIVATO ALLA FINE, MA NESSUNO VINCE DA SOLO. L'ALLEANZA È ACCORGERSI CHE LA FORZA DEL SINGOLO SI MOLTIPLICA QUANDO SOSTIENE GLI ALTRI.     COSA PORTI NEL TUO ZAINO DEGLI EROI DOPO QUESTO VIAGGIO INSIEME?", img: "a.png" }
         };
 
         const allianceCells = [16, 22, 30, 39], turboCells = [10, 20, 32, 40], stopCells = [12, 24, 34, 42], amnesiaCells = [8, 18, 28, 36];
@@ -268,7 +283,7 @@
             container.innerHTML = "";
             const icons = ['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'];
             for(let i=0; i<num; i++) {
-                container.innerHTML += `<div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:5px;"><div style="font-size:2rem; background:rgba(255,255,255,0.1); border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid var(--super-purple);">${icons[i]}</div><input type="text" id="name-${i}" placeholder="Eroe ${i+1}" style="padding:8px; width:65%; border-radius:10px; font-size:1rem; border:none; font-family:'Roboto', sans-serif; font-weight:bold;"></div>`;
+                container.innerHTML += `<div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:5px;"><div style="font-size:2rem; background:rgba(255,255,255,0.1); border-radius:10px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid var(--super-purple);">${icons[i]}</div><input type="text" id="name-${i}" placeholder="EROE ${i+1}" style="padding:8px; width:65%; border-radius:10px; font-size:1rem; border:none; font-family:'Roboto', sans-serif; font-weight:900; text-transform: uppercase;"></div>`;
             }
         }
 
@@ -282,7 +297,7 @@
             const icons = ['🦸‍♀️', '🦸‍♂️', '🤖', '🦇', '🕷️'];
             players = [];
             inputs.forEach((input, i) => {
-                players.push({ id: i, name: (input.value.trim() || `Eroe ${i+1}`).toUpperCase(), pos: 0, icon: icons[i], frozen: false, justAmnesied: false });
+                players.push({ id: i, name: (input.value.trim() || `EROE ${i+1}`).toUpperCase(), pos: 0, icon: icons[i], frozen: false, justAmnesied: false });
             });
             document.getElementById('name-screen').style.display = 'none';
             drawPath();
@@ -315,7 +330,18 @@
                 else if (stopCells.includes(i)) cell.innerHTML = "<span>🛑</span><span style='font-size:0.5rem;'>STOP</span>";
                 else if (amnesiaCells.includes(i)) cell.innerHTML = "🌀";
                 else if (allianceCells.includes(i)) cell.innerHTML = "🤝";
-                else cell.innerText = nomiCaselle[i];
+                else {
+                    if(nomiCaselle[i] === "SUPERPOWER") {
+                        cell.innerHTML = "SUPER<br>POWER";
+                        cell.style.fontSize = "0.75rem";
+                        cell.style.lineHeight = "0.9";
+                        cell.style.display = "flex";
+                        cell.style.flexDirection = "column";
+                        cell.style.justifyContent = "center";
+                    } else {
+                        cell.innerText = nomiCaselle[i];
+                    }
+                }
                 area.appendChild(cell);
             }
             document.getElementById('main-path-line').setAttribute("d", pathData);
@@ -338,7 +364,7 @@
 
         function updateTurnInfo() {
             const p = players[currentPlayerIndex];
-            document.getElementById('turn-info').innerHTML = `Turno: <span style="color:var(--fluo-green)">${p.icon} ${p.name}</span>`;
+            document.getElementById('turn-info').innerHTML = `TURNO: <span style="color:var(--fluo-green)">${p.icon} ${p.name}</span>`;
         }
 
         function playTurn() {
@@ -348,7 +374,7 @@
             
             if(p.frozen) {
                 p.frozen = false; updatePositions();
-                document.getElementById('cap-msg').innerText = p.name + " riparte!";
+                document.getElementById('cap-msg').innerText = p.name + " RIPARTE!";
                 nextTurn(); return;
             }
 
@@ -379,47 +405,39 @@
         }
 
         async function checkLanding(p) {
-            // 1. CASO AMNESIA
             if (amnesiaCells.includes(p.pos)) {
-                document.getElementById('cap-msg').innerText = "🌀 Amnesia! Indietro di 2!";
+                document.getElementById('cap-msg').innerText = "🌀 AMNESIA! INDIETRO DI 2!";
                 await new Promise(r => setTimeout(r, 1000));
                 for (let i = 0; i < 2; i++) { if (p.pos <= 0) break; p.pos--; updatePositions(); await new Promise(r => setTimeout(r, 400)); }
-                
-                // Dopo il rinculo, ricontrolla dove sei (potrebbe essere una Team o una normale)
                 checkLanding(p); 
                 return;
             } 
             
-            // 2. CASO TURBO
             if (turboCells.includes(p.pos)) {
-                document.getElementById('cap-msg').innerText = "⚡ Turbo! Avanti di 2!";
+                document.getElementById('cap-msg').innerText = "⚡ TURBO! AVANTI DI 2!";
                 await new Promise(r => setTimeout(r, 1000));
                 for (let i = 0; i < 2; i++) { if (p.pos >= totalCells - 1) break; p.pos++; updatePositions(); await new Promise(r => setTimeout(r, 400)); }
-                checkLanding(p); // Ricontrolla dove atterra col turbo
+                checkLanding(p); 
                 return;
             } 
 
-            // 3. CASO STOP
             if (stopCells.includes(p.pos)) {
                 p.frozen = true; updatePositions(); 
-                document.getElementById('cap-msg').innerText = "🛑 Fermo un turno!"; 
+                document.getElementById('cap-msg').innerText = "🛑 FERMO UN TURNO!"; 
                 nextTurn();
                 return;
             } 
 
-            // 4. CASO TEAM (L'alleanza che salva chi è dietro)
             if (allianceCells.includes(p.pos)) { 
                 handleAllianceBonus(p); 
                 return;
             } 
 
-            // 5. CASO TRAGUARDO
             if (p.pos === totalCells - 1) {
                 openWordModal("TRAGUARDO");
                 return;
             } 
 
-            // 6. CASO CASELLA NORMALE (RIFLESSIONE)
             if (p.pos > 0) {
                 openWordModal(nomiCaselle[p.pos]);
             } else {
@@ -430,7 +448,7 @@
         function handleAllianceBonus(currentPlayer) {
             const backwardOnes = players.filter(p => p.id !== currentPlayer.id && p.pos < currentPlayer.pos);
             if (backwardOnes.length === 0) { 
-                document.getElementById('cap-msg').innerText = "🤝 Nessun alleato da aiutare!"; 
+                document.getElementById('cap-msg').innerText = "🤝 NESSUN ALLEATO DA AIUTARE!"; 
                 setTimeout(() => nextTurn(), 1000);
                 return; 
             }
@@ -463,7 +481,7 @@
                 startTimer();
             }
             document.getElementById('display-word').innerText = title;
-            document.getElementById('display-desc').innerText = suggerimenti[title]?.testo || "Condividi il tuo pensiero.";
+            document.getElementById('display-desc').innerText = suggerimenti[title]?.testo || "CONDIVIDI IL TUO PENSIERO.";
             document.getElementById('word-modal').style.display = 'flex';
         }
 
@@ -471,7 +489,7 @@
             let timeLeft = 60; const bar = document.getElementById('timer-bar'), txt = document.getElementById('timer-text');
             bar.style.width = '100%'; if(timerInterval) clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                timeLeft--; txt.innerText = timeLeft + "s"; bar.style.width = (timeLeft / 60 * 100) + "%";
+                timeLeft--; txt.innerText = timeLeft + "S"; bar.style.width = (timeLeft / 60 * 100) + "%";
                 if (timeLeft <= 0) { clearInterval(timerInterval); closeWordModal(); }
             }, 1000);
         }
